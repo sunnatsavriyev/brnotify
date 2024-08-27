@@ -22,8 +22,8 @@ async def on_startup(dispatcher):
 if __name__ == '__main__':
 
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(notify_user, 'cron', hour=9, minute=00)
-    scheduler.add_job(notify_br_day_user, 'cron', hour=9, minute=08)
+    scheduler.add_job(notify_user, 'cron', hour=9, minute=30)
+    scheduler.add_job(notify_br_day_user, 'cron', hour=9, minute=8)
     scheduler.start()
     executor.start_polling(dp, on_startup=on_startup, skip_updates=True)
     
