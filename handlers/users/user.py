@@ -35,6 +35,31 @@ async def user_unregister(message: types.Message):
         await message.answer("Siz ro'yxatdan o'tmagansiz", reply_markup=user_markup)
 
 
+
+@dp.message_handler(Command("unregister"))
+async def user_unregister(message: types.Message):
+    tg_id = message.from_user.id
+    
+    if tg_id == ADMIN:
+        # Admin wants to delete a user by their first and last name
+        await message.answer("O'chirilishi kerak bo'lgan foydalanuvchining ismi va familyasini yuboring (masalan, John Doe):")
+        
+        @dp.message_handler()
+        async def get_user_name(msg: types.Message):
+            name_parts = msg.text.split()
+            if len(name_parts) != 2:
+                await msg.answer("Iltimos, foydalanuvchining to'liq ismi va familyasini kiriting.")
+                return
+            
+            first_name, last_name = name_parts
+            user = db.select_user_by_name(first_name=first_name, last_name=last_name)
+            
+            if user:
+                db.delete_user(tg_id=user['tg_id'])
+                await msg.answer(f"Foydalanuvchi {user['first_name']} {user['last_name']} bazadan o'chirildi", reply_markup=user_markup)
+            else:
+                await msg.answer("Foydalanuvchi topilmadi", reply_markup=user_markup)
+
 @dp.message_handler(Command('me'))
 async def about_me(message: types.Message):
     tg_id = message.from_user.id
