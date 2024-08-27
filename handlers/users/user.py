@@ -23,20 +23,20 @@ async def user_register(message: types.Message):
         await UserData.first_name.set()
 
 
-# @dp.message_handler(Command("unregister"))
-# async def user_unregister(message: types.Message):
-#     tg_id = message.from_user.id
-#     user = db.select_user(tg_id=tg_id)
-#     if user:
-#         db.delete_user(tg_id=tg_id)
-#         await message.answer("Siz ro'yxatdan o'chirildingiz", reply_markup=user_markup)
-#         await dp.bot.send_message(ADMIN, f"{user[1]} {user[2]} bazadan o'chirildi")
-#     else:
-#         await message.answer("Siz ro'yxatdan o'tmagansiz", reply_markup=user_markup)
-
-
-
 @dp.message_handler(Command("unregister"))
+async def user_unregister(message: types.Message):
+    tg_id = message.from_user.id
+    user = db.select_user(tg_id=tg_id)
+    if user:
+        db.delete_user(tg_id=tg_id)
+        await message.answer("Siz ro'yxatdan o'chirildingiz", reply_markup=user_markup)
+        await dp.bot.send_message(ADMIN, f"{user[1]} {user[2]} bazadan o'chirildi")
+    else:
+        await message.answer("Siz ro'yxatdan o'tmagansiz", reply_markup=user_markup)
+
+
+
+@dp.message_handler(Command("unregister_user"))
 async def user_unregister(message: types.Message):
     tg_id = message.from_user.id
     
@@ -59,15 +59,6 @@ async def user_unregister(message: types.Message):
                 await msg.answer(f"Foydalanuvchi {user['first_name']} {user['last_name']} bazadan o'chirildi", reply_markup=user_markup)
             else:
                 await msg.answer("Foydalanuvchi topilmadi", reply_markup=user_markup)
-    else:
-        # Regular user unregistering themselves
-        user = db.select_user(tg_id=tg_id)
-        if user:
-            db.delete_user(tg_id=tg_id)
-            await message.answer("Siz ro'yxatdan o'chirildingiz", reply_markup=user_markup)
-            await dp.bot.send_message(ADMIN, f"{user['first_name']} {user['last_name']} bazadan o'chirildi")
-        else:
-            await message.answer("Siz ro'yxatdan o'tmagansiz", reply_markup=user_markup)
 
 
 @dp.message_handler(Command('me'))
